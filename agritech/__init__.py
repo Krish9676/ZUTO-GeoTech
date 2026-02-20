@@ -1,5 +1,3 @@
-"""Backward-compatible import wrapper for ZutoAgriPipeline."""
-
 from agritech.pipeline import ZutoAgriPipeline
 
 __all__ = ['ZutoAgriPipeline']

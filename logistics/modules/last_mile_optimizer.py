@@ -27,7 +27,7 @@ from datetime import date
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 
-from logistics_config import ZutoLogisticsConfig
+from config.logistics_config import ZutoLogisticsConfig
 
 logger = logging.getLogger(__name__)
 

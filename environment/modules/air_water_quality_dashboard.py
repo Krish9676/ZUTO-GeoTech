@@ -35,7 +35,7 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from scipy.interpolate import RBFInterpolator   # optional — used for kriging fallback
 
-from env_config import ZutoEnvConfig
+from config.env_config import ZutoEnvConfig
 
 logger = logging.getLogger(__name__)
 

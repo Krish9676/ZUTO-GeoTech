@@ -7,8 +7,8 @@ Run this file to see the pipeline structure and what it will produce.
 Actual satellite data collection requires pystac-client and rasterio.
 """
 
-from agritech_pipeline import ZutoAgriPipeline
-from modules.spectral_index_engine import SpectralIndexEngine
+from agritech.pipeline import ZutoAgriPipeline
+from agritech.modules.spectral_index_engine import SpectralIndexEngine
 from config.agri_config import ZutoAgriConfig
 
 
@@ -108,7 +108,7 @@ def example_index_demo():
     print(f"\nTotal indices computed: {len(results)}/28")
 
     # Nutrient interpretation
-    from modules.spectral_index_engine import SpectralIndexEngine
+    from agritech.modules.spectral_index_engine import SpectralIndexEngine
     interp = SpectralIndexEngine.interpret_nutrient_levels(results)
     print("\n--- Nutrient Interpretation ---")
     for nutrient, info in interp.items():

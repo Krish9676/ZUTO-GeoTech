@@ -40,7 +40,7 @@ except ImportError:
     print("   Run: pip install pystac-client planetary-computer rasterio")
 
 from config.agri_config import ZutoAgriConfig
-from modules.spectral_index_engine import SpectralIndexEngine
+from agritech.modules.spectral_index_engine import SpectralIndexEngine
 from utils.data_processing import DataProcessor
 from utils.geometry_utils import GeometryUtils
 
