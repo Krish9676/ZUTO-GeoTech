@@ -57,6 +57,14 @@ try:
 except ImportError:
     SHAPELY_AVAILABLE = False
 
+# requests is optional — only needed when use_api=True in PriceIntelligence
+try:
+    import requests
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    REQUESTS_AVAILABLE = False
+    requests = None  # type: ignore[assignment]
+
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -318,7 +326,12 @@ class PriceIntelligence:
       signal  = prices.get_market_signal('Wheat', production_forecast_t=50000)
     """
 
-    AGMARKNET_API = "https://agmarknet.gov.in/api"   # real API endpoint
+    # FIX: Old URL "https://agmarknet.gov.in/api" returns 404.
+    # Correct endpoint is the data.gov.in Open Government Data API.
+    # Resource: "Current Daily Price of Various Commodities from Various Markets"
+    # Register for free API key at: https://data.gov.in/user/register
+    AGMARKNET_API_BASE   = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
+    AGMARKNET_API_FORMAT = "json"
 
     def __init__(
         self,
@@ -483,21 +496,43 @@ class PriceIntelligence:
             self._log(f"⚠ Could not load price CSV: {e}")
 
     def _fetch_agmarknet(self, crop_name: str, market_name: Optional[str]) -> Optional[Dict]:
-        """Attempt live fetch from Agmarknet API."""
+        """
+        Fetch live mandi price from data.gov.in AgMarkNet Open Data API.
+        Requires AGMARKNET_API_KEY set in .env file.
+        Silently returns None if key missing — MSP fallback then kicks in.
+        """
+        if not REQUESTS_AVAILABLE:
+            return None
         try:
-            import requests
-            params = {'commodity': crop_name, 'market': market_name or ''}
-            resp   = requests.get(f"{self.AGMARKNET_API}/prices", params=params, timeout=10)
+            import os
+            api_key = os.getenv('AGMARKNET_API_KEY', '')
+            if not api_key:
+                return None
+
+            params = {
+                'api-key':            api_key,
+                'format':             self.AGMARKNET_API_FORMAT,
+                'filters[Commodity]': crop_name,
+                'limit':              5,
+            }
+            if market_name:
+                params['filters[Market]'] = market_name
+
+            resp = requests.get(self.AGMARKNET_API_BASE, params=params, timeout=10)
             if resp.ok:
-                data  = resp.json()
-                price = data.get('modal_price') or data.get('price')
-                if price:
-                    return {
-                        'price_per_quintal': float(price),
-                        'date':              datetime.now().strftime('%Y-%m-%d'),
-                        'market':            market_name or data.get('market', 'API'),
-                        'source':            'agmarknet_api',
-                    }
+                records = resp.json().get('records', [])
+                if records:
+                    latest = records[0]
+                    price  = latest.get('Modal_Price') or latest.get('modal_price')
+                    if price:
+                        return {
+                            'price_per_quintal': float(price),
+                            'date':    latest.get('Arrival_Date',
+                                       datetime.now().strftime('%Y-%m-%d')),
+                            'market':  latest.get('Market', market_name or 'API'),
+                            'state':   latest.get('State', ''),
+                            'source':  'agmarknet_api',
+                        }
         except Exception:
             pass
         return None

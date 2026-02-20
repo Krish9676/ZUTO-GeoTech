@@ -596,7 +596,7 @@ class SpectralIndexEngine:
                 n_status = 'Severe Deficiency'
             interpretation['Nitrogen'] = {
                 'status': n_status, 'RENDVI': round(rendvi, 4),
-                'CI_RedEdge': round(ci_re, 4) if not np.isnan(ci_re) else None,
+                'CI_REDEDGE': round(ci_re, 4) if not np.isnan(ci_re) else None,
                 'action': 'Apply N fertilizer' if 'Deficiency' in n_status else 'Monitor'
             }
 

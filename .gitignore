@@ -1,0 +1,82 @@
+# ============================================================
+# ZUTO GeoTech Solutions — .gitignore
+# ============================================================
+
+# ── SECRETS (CRITICAL — never commit these) ──────────────────
+.env
+credentials.txt
+*.key
+*.pem
+secrets/
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ── Virtual Environments ──────────────────────────────────────
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# ── Jupyter Notebooks ─────────────────────────────────────────
+.ipynb_checkpoints
+*.ipynb
+
+# ── Data & Outputs ────────────────────────────────────────────
+outputs/
+data/raw/
+data/processed/
+*.tif
+*.tiff
+*.nc
+*.h5
+*.hdf5
+
+# ── ML Models ─────────────────────────────────────────────────
+models/
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.onnx
+
+# ── IDEs ──────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Testing ───────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/

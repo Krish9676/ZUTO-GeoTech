@@ -33,6 +33,7 @@ Usage:
 
 import json
 import logging
+import numpy as np
 from datetime import datetime
 from typing import Dict, List, Optional, Union
 from pathlib import Path
@@ -318,11 +319,10 @@ class ZutoAgriPipeline:
                 if s.get('indices', {}).get(idx, {}).get('mean') is not None
             ]
             if vals:
-                import numpy as np
                 stats[idx] = {
-                    'mean': round(float(sum(vals) / len(vals)), 4),
-                    'max':  round(float(max(vals)), 4),
-                    'min':  round(float(min(vals)), 4),
+                    'mean': round(float(np.mean(vals)), 4),
+                    'max':  round(float(np.max(vals)), 4),
+                    'min':  round(float(np.min(vals)), 4),
                     'n':    len(vals),
                 }
         return stats

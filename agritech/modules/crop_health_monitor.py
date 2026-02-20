@@ -530,7 +530,7 @@ class CropHealthMonitor:
             'Nitrogen': {
                 'status':   n_status(rendvi_avg),
                 'RENDVI':   round(rendvi_avg, 4) if rendvi_avg else None,
-                'CI_RedEdge': round(ci_re_avg, 4) if ci_re_avg else None,
+                'CI_REDEDGE': round(ci_re_avg, 4) if ci_re_avg else None,
             },
             'Phosphorus_Potassium': {
                 'status':   'Monitor' if rendvi_avg and rendvi_avg > 0.4 else 'Check',

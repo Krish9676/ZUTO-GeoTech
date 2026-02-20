@@ -116,9 +116,10 @@ class ZutoAgriConfig:
     }
 
     # =========================================================================
-    # SPECTRAL INDEX SUITE — ALL 28 INDICES
+    # SPECTRAL INDEX SUITE — 27 INDICES
     # =========================================================================
-    # Organised by tier and purpose, computed on every scene
+    # Organised by tier and purpose, computed on every scene.
+    # All names are UPPER_SNAKE_CASE to match SpectralIndexEngine output keys.
 
     # Tier 1: Core vegetation health (computed always)
     TIER1_INDICES = [
@@ -133,7 +134,7 @@ class ZutoAgriConfig:
 
     # Tier 2: Soil nutrient indices
     TIER2_INDICES = [
-        'CI_REDEDGE', # CIred-edge — chlorophyll/N direct
+        'CI_REDEDGE', # Chlorophyll Index Red Edge — chlorophyll/N direct
         'TGI',        # Triangle Greenness — early N stress
         'MSR',        # Modified Simple Ratio — P/K proxy
         'SI',         # Salinity Index (EC correlation)
@@ -146,24 +147,25 @@ class ZutoAgriConfig:
     ]
 
     # Tier 3: Moisture & stress indices
+    # FIX: 'NMDI' was listed twice — duplicate removed. TIER3 is now 6 entries.
     TIER3_INDICES = [
-        'NDWI',      # Water body detection
-        'MNDWI',     # Modified water (urban areas)
-        'NMDI',      # Multi-band drought
+        'NDWI',       # Water body detection
+        'MNDWI',      # Modified water (urban areas)
+        'NMDI',       # Normalized Multi-band Drought Index
         'MSI_STRESS', # Moisture Stress Index
-        'NMDI',      # Normalized Multi-band Drought
-        'NDDI',      # Drought index (NDVI-NDWI combo)
-        'PSRI',      # Senescence / Maturity
+        'NDDI',       # Drought index (NDVI-NDWI combo)
+        'PSRI',       # Plant Senescence Reflectance Index
     ]
 
     # Tier 4: Growth stage & canopy
     TIER4_INDICES = [
-        'SR1',       # Simple Ratio NIR/Red — biomass
-        'SR2',       # Simple Ratio Blue/Green — early stress
-        'CRI',       # Carotenoid Reflectance — stress
-        'LSWI',      # Land Surface Water Index
+        'SR1',   # Simple Ratio NIR/Red — biomass
+        'SR2',   # Simple Ratio Blue/Green — early stress
+        'CRI',   # Carotenoid Reflectance — stress
+        'LSWI',  # Land Surface Water Index
     ]
 
+    # 7 + 10 + 6 + 4 = 27 unique indices (matches SpectralIndexEngine exactly)
     ALL_INDICES = TIER1_INDICES + TIER2_INDICES + TIER3_INDICES + TIER4_INDICES
 
     # =========================================================================
@@ -386,7 +388,9 @@ class ZutoAgriConfig:
     LANDSAT_COLLECTION      = "landsat-c2-l2"
     NASA_POWER_BASE_URL     = "https://power.larc.nasa.gov/api/temporal/daily/point"
     NASA_POWER_COMMUNITY    = "AG"
-    AGMARKNET_API           = "https://agmarknet.gov.in/api"   # market prices
+    AGMARKNET_API_BASE   = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
+    AGMARKNET_API_FORMAT = "json"
+    # Register for API key at: https://data.gov.in/user/register
 
     # =========================================================================
     # LOGGING / OUTPUT
@@ -407,6 +411,19 @@ class ZutoAgriConfig:
             errors.append("MAX_CLOUD_COVER must be between 0–100")
         if cls.MIN_VALID_PIXEL_RATIO <= 0 or cls.MIN_VALID_PIXEL_RATIO > 1:
             errors.append("MIN_VALID_PIXEL_RATIO must be 0–1")
+
+        # Duplicate index detection — catches naming bugs at import time
+        seen, duplicates = set(), []
+        for idx in cls.ALL_INDICES:
+            if idx in seen:
+                duplicates.append(idx)
+            seen.add(idx)
+        if duplicates:
+            errors.append(
+                f"Duplicate index names in ALL_INDICES: {duplicates}. "
+                f"Each index must appear exactly once across all TIER lists."
+            )
+
         if errors:
             raise ValueError(f"ZutoAgriConfig errors: {errors}")
         return True

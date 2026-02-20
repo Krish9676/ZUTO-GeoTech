@@ -1,3 +1,35 @@
+# # ============================================================
+# # ZUTO GeoTech Solutions — Python Dependencies
+# # ============================================================
+# # Install: pip install -r requirements.txt
+
+# # ── Core Scientific ───────────────────────────────────────────
+# numpy>=1.24.0
+# pandas>=2.0.0
+# scipy>=1.11.0
+
+# # ── Machine Learning ──────────────────────────────────────────
+# scikit-learn>=1.3.0
+# xgboost>=2.0.0
+
+# # ── Satellite & Geospatial ────────────────────────────────────
+# pystac-client>=0.7.0
+# planetary-computer>=1.0.0
+# rasterio>=1.3.0
+# shapely>=2.0.0
+
+# # ── Database ─────────────────────────────────────────────────
+# pymongo>=4.6.0          # synchronous MongoDB driver
+# motor>=3.3.0            # async MongoDB driver (for FastAPI)
+
+# # ── REST API ──────────────────────────────────────────────────
+# fastapi>=0.109.0
+# uvicorn[standard]>=0.27.0
+# pydantic>=2.5.0
+
+# # ── Configuration ─────────────────────────────────────────────
+# python-dotenv>=1.0.0    # load .env file into environment
+
 numpy
 pandas
 scipy
@@ -7,3 +39,18 @@ pystac-client
 planetary-computer
 rasterio
 shapely
+
+# Market data API
+requests
+
+# Database (Phase 4)
+pymongo
+motor
+
+# REST API (Phase 5)
+fastapi
+uvicorn[standard]
+pydantic
+
+# Config
+python-dotenv
